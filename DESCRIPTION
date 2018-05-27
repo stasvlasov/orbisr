@@ -1,0 +1,13 @@
+Package: orbisr
+Title: Tools for working with Orbis Bulk database
+Version: 0.0.0.9000
+Authors@R: 'Stas Vlasov <s.vlasov@uvt.nl> [aut, cre]'
+Description: Set of functions that help to prepare, to load into R session and to search Orbis Bulk data
+Depends: R (>= 3.5.0)
+License: MIT License
+Encoding: UTF-8
+LazyData: true
+Date: 2018-05-27
+Imports: pbapply, data.table, magrittr
+References: BvD Orbis - Detailed global private company information - https://www.bvdinfo.m/en-us/our-products/company-information/international-products/orbis
+RoxygenNote: 6.0.1

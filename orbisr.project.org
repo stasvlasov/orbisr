@@ -1,0 +1,48 @@
+* PROJECT Orbisr R package
+:LOGBOOK:
+CLOCK: [2018-05-27 Sun 21:25]--[2018-05-27 Sun 22:00] =>  0:35
+- State "PROJECT"    from              [2018-05-27 Sun 21:25]
+:END:
+
+** FIRM Function that filters orbis table
+CLOSED: [2018-05-27 Sun 23:43]
+:LOGBOOK:
+- State "FIRM"       from "OPEN"       [2018-05-27 Sun 23:43]
+- State "OPEN"       from "TASK"       [2018-05-27 Sun 22:01]
+CLOCK: [2018-05-27 Sun 22:01]--[2018-05-27 Sun 23:43] =>  1:42
+- State "TASK"       from              [2018-05-27 Sun 21:27]
+:END:
+
+
+
+
+** TASK Function that unpack the rar files
+:LOGBOOK:
+- State "TASK"       from              [2018-05-27 Sun 21:26]
+:END:
+
+** TASK Fuction that read txt files and saves to many rds
+:LOGBOOK:
+- State "TASK"       from              [2018-05-27 Sun 21:26]
+:END:
+
+
+** TASK Harmonize org names function
+:LOGBOOK:
+- State "TASK"       from              [2018-05-27 Sun 21:28]
+:END:
+
+** TASK General deploy function with settings
+:LOGBOOK:
+- State "TASK"       from              [2018-05-27 Sun 21:27]
+:END:
+
+- [ ] unpack files
+- [ ] read and save rds
+- [ ] delete files
+- [ ] do it one by one to save disk space
+
+** TASK Functions that searches org names and returns binded table
+:LOGBOOK:
+- State "TASK"       from              [2018-05-27 Sun 21:29]
+:END:
