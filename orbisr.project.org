@@ -1,7 +1,10 @@
-* PROJECT Orbisr R package
+* PROJ Orbisr R package
+:PROPERTIES:
+:ID:       org:qgc7f3t0y5i0
+:END:
 :LOGBOOK:
 CLOCK: [2018-05-27 Sun 21:25]--[2018-05-27 Sun 22:00] =>  0:35
-- State "PROJECT"    from              [2018-05-27 Sun 21:25]
+- State "PROJ"    from              [2018-05-27 Sun 21:25]
 :END:
 
 ** FIRM Function that filters orbis table
@@ -13,16 +16,23 @@ CLOCK: [2018-05-27 Sun 22:01]--[2018-05-27 Sun 23:43] =>  1:42
 - State "TASK"       from              [2018-05-27 Sun 21:27]
 :END:
 
-
-
-
-** TASK Function that unpack the rar files
+** FIRM Fuction that read txt files and saves to many rds
+CLOSED: [2018-05-29 Tue 00:10]
 :LOGBOOK:
+- State "FIRM"       from "OPEN"       [2018-05-29 Tue 00:10]
+CLOCK: [2018-05-28 Mon 20:56]--[2018-05-29 Tue 00:10] =>  3:14
+- State "OPEN"       from "TASK"       [2018-05-28 Mon 18:45]
+CLOCK: [2018-05-28 Mon 18:45]--[2018-05-28 Mon 19:05] =>  0:20
 - State "TASK"       from              [2018-05-27 Sun 21:26]
 :END:
 
-** TASK Fuction that read txt files and saves to many rds
+
+
+
+** FIRM Function that unpack the rar files
+CLOSED: [2018-06-07 Thu 12:19]
 :LOGBOOK:
+- State "FIRM"       from "TASK"       [2018-06-07 Thu 12:19]
 - State "TASK"       from              [2018-05-27 Sun 21:26]
 :END:
 
@@ -45,4 +55,8 @@ CLOCK: [2018-05-27 Sun 22:01]--[2018-05-27 Sun 23:43] =>  1:42
 ** TASK Functions that searches org names and returns binded table
 :LOGBOOK:
 - State "TASK"       from              [2018-05-27 Sun 21:29]
+:END:
+** TASK add select cols to orbiser.filter
+:LOGBOOK:
+- State "TASK"       from              [2019-01-11 Fri 18:28]
 :END:

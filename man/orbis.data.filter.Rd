@@ -4,12 +4,14 @@
 \alias{orbis.data.filter}
 \title{Filter tables of Orbis bulk data}
 \usage{
-orbis.data.filter(orbis.data.path, ...)
+orbis.data.filter(orbis.data.path, ..., cols = character(0))
 }
 \arguments{
 \item{orbis.data.path}{A path to directory with .rds files containing Orbis specific table from Orbis Bulk Data.}
 
 \item{...}{A filtering conditions to fetch certain rows. (See dplyr::filter)}
+
+\item{cols}{Which column to select. Default is all columns.}
 }
 \value{
 A data.table with a subset of a table from Orbis Bulk Data.

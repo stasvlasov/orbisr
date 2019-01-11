@@ -20,7 +20,7 @@ for(pkg in c('pbapply'
 
 ## Making a package
 ## --------------------------------------------------------------------------------
-setwd("~/mega/data/orbis/orbisr")
+setwd("~/org/data/orbis/orbisr")
 
 ## Updates package info
 person("Stas", "Vlasov", 
@@ -33,11 +33,13 @@ person("Stas", "Vlasov",
 
 ## Assume that it runs from "harmonizer" directory
 list(Title  = "Tools for working with Orbis Bulk database"
-   , Date = "2018-05-27"
+   , Date = "2019-01-11"
    , License = "MIT License"
    , Imports = paste("pbapply"
                    , "data.table"
                    , "magrittr"
+                   , "stringr"
+                   , "dplyr"
                    , sep = ", ")
    , Description = "Set of functions that help to prepare, to load into R session and to search Orbis Bulk data"
    , References = "BvD Orbis - Detailed global private company information - https://www.bvdinfo.m/en-us/our-products/company-information/international-products/orbis") %>% 
@@ -58,6 +60,8 @@ install(".")
 
 ## install_github("stasvlasov/harmonizer")
 library('orbisr')
+
+
 
 
 
