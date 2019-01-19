@@ -223,24 +223,39 @@ orbis.unrar.file <- function(rarfile
 #' Similar to dplyr::filter but for tables of Orbis bulk data saved in multiple .rds files
 #' @param orbis.data.path A path to directory with .rds files containing Orbis specific table from Orbis Bulk Data.
 #' @param ... A filtering conditions to fetch certain rows. (See dplyr::filter)
+#' @param file.pattern A pattern for getting a file or a set of files (data batches)
 #' @param cols Which column to select. Default is all columns.
+#' @param progress.bar Whether to show progress bar (with pbapply package). Default is TRUE
 #' @return A data.table with a subset of a table from Orbis Bulk Data.
 #' @import pbapply magrittr data.table dplyr
 #' @export
 #' @examples
 #' none yet...
 #' @md
-orbis.data.filter <- function(orbis.data.path, ...
-                            , cols = character(0)) {
-    orbis.data.path %>%
-        file.path(list.files(.)) %>%
-        pblapply(function(orbis.data.file.path)
-            orbis.data.file.path %>%
-            readRDS %>% 
-            dplyr::filter(...) %>%
-            dplyr::select(if(cols %>% is.0) everything() else cols)
-            ) %>%
-        rbindlist(fill = TRUE) %>% 
-        return
-}
+orbis.filter <- function(orbis.data.path
+                       , ...
+                       , file.pattern = NULL
+                       , cols = character(0)
+                       , progress.bar = TRUE) {
+    if(progress.bar) {
+        orbis.data.path %>%
+            file.path(list.files(., pattern = file.pattern)) %>%
+            pblapply(function(orbis.data.file.path)
+                orbis.data.file.path %>%
+                readRDS %>% 
+                dplyr::filter(...) %>%
+                dplyr::select(if(cols %>% is.0) everything() else cols)) %>%
+            rbindlist(fill = TRUE) %>% 
+            return
+    } else {
+        orbis.data.path %>%
+            file.path(list.files(., pattern = file.pattern)) %>%
+            lapply(function(orbis.data.file.path)
+                orbis.data.file.path %>%
+                readRDS %>% 
+                dplyr::filter(...) %>%
+                dplyr::select(if(cols %>% is.0) everything() else cols)) %>%
+            rbindlist(fill = TRUE) %>% 
+            return
+    }}
 ## --------------------------------------------------------------------------------

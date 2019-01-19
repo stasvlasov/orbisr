@@ -20,7 +20,7 @@ for(pkg in c('pbapply'
 
 ## Making a package
 ## --------------------------------------------------------------------------------
-setwd("~/org/data/orbis/orbisr")
+## setwd("~/org/data/orbis/orbisr")
 
 ## Updates package info
 person("Stas", "Vlasov", 
@@ -41,6 +41,7 @@ list(Title  = "Tools for working with Orbis Bulk database"
                    , "stringr"
                    , "dplyr"
                    , sep = ", ")
+   , Depends = "R (>= 3.4.1)"
    , Description = "Set of functions that help to prepare, to load into R session and to search Orbis Bulk data"
    , References = "BvD Orbis - Detailed global private company information - https://www.bvdinfo.m/en-us/our-products/company-information/international-products/orbis") %>% 
     {setup(rstudio = FALSE

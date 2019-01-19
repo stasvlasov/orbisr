@@ -1,8 +1,9 @@
-* PROJ Orbisr R package
+* WORK Orbisr R package
 :PROPERTIES:
 :ID:       org:qgc7f3t0y5i0
 :END:
 :LOGBOOK:
+- State "WORK"       from "PROJ"       [2019-01-19 Sat 13:25]
 CLOCK: [2018-05-27 Sun 21:25]--[2018-05-27 Sun 22:00] =>  0:35
 - State "PROJ"    from              [2018-05-27 Sun 21:25]
 :END:
@@ -52,11 +53,30 @@ CLOSED: [2018-06-07 Thu 12:19]
 - [ ] delete files
 - [ ] do it one by one to save disk space
 
-** TASK Functions that searches org names and returns binded table
+** FIRM Add files filtering based on regex
+CLOSED: [2019-01-19 Sat 13:25]
 :LOGBOOK:
+- State "FIRM"       from "OPEN"       [2019-01-19 Sat 13:25]
+- State "OPEN"       from "TASK"       [2019-01-19 Sat 13:16]
+CLOCK: [2019-01-19 Sat 13:16]--[2019-01-19 Sat 13:25] =>  0:09
+- State "TASK"       from              [2019-01-18 Fri 06:36]
+:END:
+** FIRM Functions that searches org names and returns binded table
+CLOSED: [2019-01-19 Sat 13:25]
+:LOGBOOK:
+- State "FIRM"       from "TASK"       [2019-01-19 Sat 13:25]
 - State "TASK"       from              [2018-05-27 Sun 21:29]
 :END:
-** TASK add select cols to orbiser.filter
+
+** FIRM add select cols to orbiser.filter
+CLOSED: [2019-01-11 Fri 19:24]
 :LOGBOOK:
+- State "FIRM"       from "TASK"       [2019-01-11 Fri 19:24]
 - State "TASK"       from              [2019-01-11 Fri 18:28]
+:END:
+** FIRM rename orbis.data.filter to orbis.filter
+CLOSED: [2019-01-18 Fri 06:36]
+:LOGBOOK:
+- State "FIRM"       from "TASK"       [2019-01-18 Fri 06:36]
+- State "TASK"       from              [2019-01-11 Fri 19:24]
 :END:
