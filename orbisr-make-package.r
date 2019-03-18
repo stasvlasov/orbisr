@@ -57,6 +57,9 @@ document()
 
 ## Testing
 ## --------------------------------------------------------------------------------
+detach('orbisr')
+remove.packages('orbisr')
+
 install(".")
 
 ## install_github("stasvlasov/harmonizer")
