@@ -9,7 +9,10 @@ orbis.save.rds(orbis.data.raw.file, orbis.data.path = getwd(),
   orbis.data.codes.dir = file.path(orbis.data.path, "orbis-var-names"),
   orbis.select.fields = character(0), orbis.data.raw.nlines = 0,
   orbis.data.raw.skip.lines = 2, orbis.batch.nlines = 10^7,
-  orbis.batch.path = character(0))
+  orbis.batch.path = character(0), orbis.harmonize.cols = character(0),
+  harmonizer.progress.by = 10^5, harmonizer.quite = FALSE,
+  harmonizer.procedures = list(list("toascii", FALSE), "remove.brackets",
+  "toupper", "apply.nber", "remove.spaces"))
 }
 \arguments{
 \item{orbis.data.raw.file}{File name of raw Orbis data}
@@ -29,9 +32,17 @@ orbis.save.rds(orbis.data.raw.file, orbis.data.path = getwd(),
 \item{orbis.batch.nlines}{Number of lines to read in batch. The default is 10^7}
 
 \item{orbis.batch.path}{Path for saving .rds files. The default is dir same as 'orbis.data.raw.file'}
+
+\item{orbis.harmonize.cols}{Which columns to harmonize. (Requires harmonizer package.)}
+
+\item{harmonizer.progress.by}{(Requires harmonizer package.) Numeric value that is used to split the org.names vector for showing percentage of completion. Default is 0 meaning not to split the vector and thus does not show progress percentage. Designed to be used for long strings.}
+
+\item{harmonizer.quite}{(Requires harmonizer package.) Logical value indicating whether or not print messages about procedures progress.}
+
+\item{harmonizer.procedures}{(Requires harmonizer package.) List of harmonization procedures. Each procedure can be specified as a string representing procedure name (see details for procedure names) or as a list where the first element should be procedure name (string) and other elements will passed as arguments to this procedure.}
 }
 \value{
-A vector of .rds file names
+A vector of .rds file names.
 }
 \description{
 Designed to be run from the direcrory where the data is.

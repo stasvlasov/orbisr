@@ -1,13 +1,26 @@
 Package: orbisr
 Title: Tools for working with Orbis Bulk database
 Version: 0.0.0.9000
-Authors@R: 'Stas Vlasov <s.vlasov@uvt.nl> [aut, cre]'
-Description: Set of functions that help to prepare, to load into R session and to search Orbis Bulk data
-Depends: R (>= 3.4.1)
+Date: 2019-03-18
+Authors@R: 
+    person(given = "Stanislav",
+           family = "Vlasov",
+           role = c("aut", "cre"),
+           email = "s.vlasov@uvt.nl")
+Description: Set of functions that help to prepare, to load
+    into R session and to search Orbis Bulk data
 License: MIT License
+Depends: 
+    R (>= 3.4.1)
+Imports: 
+    data.table,
+    dplyr,
+    magrittr,
+    pbapply,
+    stringr
 Encoding: UTF-8
 LazyData: true
-Date: 2019-01-11
-Imports: pbapply, data.table, magrittr, stringr, dplyr
-References: BvD Orbis - Detailed global private company information - https://www.bvdinfo.m/en-us/our-products/company-information/international-products/orbis
+References: BvD Orbis - Detailed global private company
+    information -
+    https://www.bvdinfo.m/en-us/our-products/company-information/international-products/orbis
 RoxygenNote: 6.0.1

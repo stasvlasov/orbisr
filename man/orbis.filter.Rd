@@ -4,19 +4,19 @@
 \alias{orbis.filter}
 \title{Filter tables of Orbis bulk data}
 \usage{
-orbis.filter(orbis.data.path, ..., file.pattern = NULL, cols = character(0),
-  progress.bar = TRUE)
+orbis.filter(orbis.data.path, ..., files.pattern = NULL,
+  cols = character(0), progress.bar = TRUE)
 }
 \arguments{
 \item{orbis.data.path}{A path to directory with .rds files containing Orbis specific table from Orbis Bulk Data.}
 
 \item{...}{A filtering conditions to fetch certain rows. (See dplyr::filter)}
 
-\item{file.pattern}{A pattern for getting a file or a set of files (data batches)}
-
 \item{cols}{Which column to select. Default is all columns.}
 
 \item{progress.bar}{Whether to show progress bar (with pbapply package). Default is TRUE}
+
+\item{file.pattern}{A pattern for getting a file or a set of files (data batches)}
 }
 \value{
 A data.table with a subset of a table from Orbis Bulk Data.

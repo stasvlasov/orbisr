@@ -2,9 +2,10 @@
 
 export(orbis.filter)
 export(orbis.save.rds)
-export(orbis.unrar.file)
+export(orbis.unrar.txt)
 import(data.table)
 import(dplyr)
+import(harmonizer)
 import(magrittr)
 import(pbapply)
 import(stringr)

@@ -1,6 +1,12 @@
-## Tools for working with Orbis bulk data
-## ================================================================================
-
+#' Tools for working with Orbis bulk data
+#'
+#' ================================================================================
+#'
+#' The only functions you're likely to need from \pkg{orbisr} for deployment of Orbis
+#' database are \code{\link{orbis.save.rds}} and \code{\link{orbis.unrar.txt}}.
+#' 
+#' For working with deploied Orbis database you will need only \code{\link{orbis.filter}}
+"_PACKAGE"
 
 
 ## --------------------------------------------------------------------------------
@@ -17,32 +23,37 @@
 ##         install.packages(pkg, repos = 'http://cloud.r-project.org')
 ##         library(pkg, character.only = TRUE)
 ##     }
+
+## library('harmonizer')
+## library('orbisr')
+
 ## --------------------------------------------------------------------------------
-
-
-
-
-
 
 ## ================================================================================
 ## Utilites functions
 ## ================================================================================
 
 ## Calculates number of lines a file has
-get.file.nlines <- function(file.name, dir.path = getwd()) {
-    file.name %>%
+get.file.nlines <- function(file.name
+                          , dir.path = getwd()
+                          , command = "grep -c $") {
+    ## check if the programm (first word in command) is available
+    if(Sys.which(str_extract(command, "^[^\\s]+")) != "") {
+        file.name %>%
         file.path(dir.path, .) %>% 
-        paste("grep -c $", .) %>%
+        paste(command, .) %>%
         system(intern = TRUE) %>%
         as.numeric
+    } else message("Cannot find grep programm. Consider installing grep first")
 }
-
 
 is.0 <- function(x) length(x) == 0
 
 ## ================================================================================
 ## Main functions
 ## ================================================================================
+
+
 
 ## --------------------------------------------------------------------------------
 #' Read orbis raw data table to many .rds files
@@ -58,8 +69,12 @@ is.0 <- function(x) length(x) == 0
 #' @param orbis.data.raw.skip.lines The header of raw data. The default is 2.
 #' @param orbis.batch.nlines Number of lines to read in batch. The default is 10^7
 #' @param orbis.batch.path Path for saving .rds files. The default is dir same as 'orbis.data.raw.file'
-#' @return A vector of .rds file names
-#' @import magrittr data.table stringr dplyr
+#' @param orbis.harmonize.cols Which columns to harmonize. (Requires harmonizer package.)
+#' @param harmonizer.progress.by (Requires harmonizer package.) Numeric value that is used to split the org.names vector for showing percentage of completion. Default is 0 meaning not to split the vector and thus does not show progress percentage. Designed to be used for long strings.
+#' @param harmonizer.quite (Requires harmonizer package.) Logical value indicating whether or not print messages about procedures progress.
+#' @param harmonizer.procedures (Requires harmonizer package.) List of harmonization procedures. Each procedure can be specified as a string representing procedure name (see details for procedure names) or as a list where the first element should be procedure name (string) and other elements will passed as arguments to this procedure.
+#' @return A vector of .rds file names.
+#' @import magrittr data.table stringr dplyr harmonizer
 #' @export
 #' @examples
 #' none yet...
@@ -73,6 +88,14 @@ orbis.save.rds <- function(orbis.data.raw.file
                          , orbis.data.raw.skip.lines = 2
                          , orbis.batch.nlines = 10^7
                          , orbis.batch.path = character(0)
+                         , orbis.harmonize.cols = character(0)
+                         , harmonizer.progress.by = 10^5
+                         , harmonizer.quite = FALSE
+                         , harmonizer.procedures = list(list("toascii", FALSE)
+                                                      , "remove.brackets"
+                                                      , "toupper"
+                                                      , "apply.nber"
+                                                      , "remove.spaces")
                            ) {
     ## Calculate number of lines a raw Orbis data file has
     if(orbis.data.raw.nlines == 0) {
@@ -126,6 +149,7 @@ orbis.save.rds <- function(orbis.data.raw.file
         message("Reading lines from ", rows.skip[i])
         started <- Sys.time()
         message("Started: ", date())
+        ## read batch
         orbis.data.batch <-
             orbis.data.raw.file %>% 
             file.path(orbis.data.path, .) %>% 
@@ -139,10 +163,22 @@ orbis.save.rds <- function(orbis.data.raw.file
                 , sep = "\t"
                 , stringsAsFactors = FALSE
                 , colClasses = list(character = orbis.data.description$col))
-        ## name columns
-        names(orbis.data.batch) <- orbis.data.description$var.name
-        ## save batch
         message("Batch loaded!")
+        ## rename columns
+        names(orbis.data.batch) <- orbis.data.description$var.name
+        ## harmonization
+        if(orbis.harmonize.cols %>% !is.0) {
+            sapply(orbis.harmonize.cols, function(col) {
+                message("Harmonizing '", col, "' column...")
+                orbis.data.batch[[paste0(col, ".harmonized")]] <<- 
+                    orbis.data.batch[[col]] %>%
+                    harmonize(progress.by = harmonizer.progress.by
+                            , quite = harmonizer.quite
+                            , procedures = harmonizer.procedures)
+                message("Harmonized '", col, "' column! Yey!")
+            })
+        }
+        ## save batch
         ## Make a dir for saving .rds
         if(orbis.batch.path %>% is.0) {
             orbis.batch.path <-
@@ -188,7 +224,7 @@ orbis.save.rds <- function(orbis.data.raw.file
 #' @examples
 #' none yet...
 #' @md
-orbis.unrar.file <- function(rarfile
+orbis.unrar.txt <- function(rarfile
                            , rardir = file.path(getwd(), "orbis-world-2017-09-13")
                            , exdir = getwd()) {
     file.name <- rarfile %>%
@@ -234,12 +270,14 @@ orbis.unrar.file <- function(rarfile
 #' @md
 orbis.filter <- function(orbis.data.path
                        , ...
-                       , file.pattern = NULL
+                       , files.pattern = NULL
                        , cols = character(0)
                        , progress.bar = TRUE) {
+    orbis.files <- orbis.data.path %>%
+        file.path(list.files(.
+                           , pattern = files.pattern))
     if(progress.bar) {
-        orbis.data.path %>%
-            file.path(list.files(., pattern = file.pattern)) %>%
+        orbis.files %>% 
             pblapply(function(orbis.data.file.path)
                 orbis.data.file.path %>%
                 readRDS %>% 
@@ -248,8 +286,7 @@ orbis.filter <- function(orbis.data.path
             rbindlist(fill = TRUE) %>% 
             return
     } else {
-        orbis.data.path %>%
-            file.path(list.files(., pattern = file.pattern)) %>%
+        orbis.files %>% 
             lapply(function(orbis.data.file.path)
                 orbis.data.file.path %>%
                 readRDS %>% 
