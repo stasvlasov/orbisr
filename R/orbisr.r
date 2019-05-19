@@ -52,6 +52,7 @@ is.0 <- function(x) length(x) == 0
 #' @param batch.file.name.prefix Prefix to .rds file name
 #' @param batch.file.name.sufix Sufix to .rds file name
 #' @param save.rds If FALSE it will return loaded data without saving .rsd. Otherwise it will return list of rds. file names that was saved. Default is TRUE
+#' @param compress.rds Default is FALSE. It is faster to read and write if rds is not compressed.
 #' @param return.invisible If TRUE return invisibly. Default is FALSE
 #' @param harmonize.cols Which columns to harmonize. (Requires harmonizer package.)
 #' @param harmonize.progress.by (Requires harmonizer package.) Numeric value that is used to split the org.names vector for showing percentage of completion. Default is 0 meaning not to split the vector and thus does not show progress percentage. Designed to be used for long strings.
@@ -74,6 +75,7 @@ orbis.save.rds <- function(txt.file.name
                          , batch.file.name = character(0)
                          , batch.file.name.prefix = ""
                          , batch.file.name.sufix = ""
+                         , compress.rds = FALSE
                          , save.rds = TRUE
                          , return.invisible = FALSE
                          , harmonize.cols = character(0)
@@ -205,7 +207,7 @@ orbis.save.rds <- function(txt.file.name
                            , ".rds"))
           }
         message("Saving RDS: ", batch.file.name)
-        saveRDS(orbis.data.batch, batch.file.name)
+        saveRDS(orbis.data.batch, batch.file.name, compress = compress.rds)
       }
       message("Done! (in ", as.numeric(Sys.time() - started) %>% round, " minutes)")
       ## return
