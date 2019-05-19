@@ -5,7 +5,8 @@
 \title{Unpacks Orbis RAR files.}
 \usage{
 orbis.unrar.txt(rarfile, rardir = file.path(getwd(),
-  "orbis-world-2017-09-13"), exdir = getwd())
+  "orbis-world-2017-09-13"), exdir = getwd(),
+  unrar.command = "7z x -o")
 }
 \arguments{
 \item{rarfile}{File name to unrar. (without .rar extention)}
@@ -13,12 +14,14 @@ orbis.unrar.txt(rarfile, rardir = file.path(getwd(),
 \item{rardir}{Default is in working directory "orbis-world-2017-09-13"}
 
 \item{exdir}{A path where to extract zip file. Default is in working directory "patview-data-tsv"}
+
+\item{unrar.command}{Command to unpack the archive (befault is "7z x -o")}
 }
 \value{
 Unzipped file path.
 }
 \description{
-Assumes that it is running from the orbis data directory
+By default assumes that it is running from the orbis data directory. Also it chances output file name to lowercase and "_" becomes "-".
 }
 \examples{
 none yet...

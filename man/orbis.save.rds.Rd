@@ -4,49 +4,47 @@
 \alias{orbis.save.rds}
 \title{Read orbis raw data table to many .rds files}
 \usage{
-orbis.save.rds(orbis.data.raw.file, orbis.data.path = getwd(),
-  orbis.data.codes.file = character(0),
-  orbis.data.codes.dir = file.path(orbis.data.path, "orbis-var-names"),
-  orbis.select.fields = character(0), orbis.data.raw.nlines = 0,
-  orbis.data.raw.skip.lines = 2, orbis.batch.nlines = 10^7,
-  orbis.batch.path = character(0), orbis.harmonize.cols = character(0),
-  harmonizer.progress.by = 10^5, harmonizer.quite = FALSE,
-  harmonizer.procedures = list(list("toascii", FALSE), "remove.brackets",
-  "toupper", "apply.nber", "remove.spaces"))
+orbis.save.rds(txt.file.name, txt.file.dir = getwd(),
+  data.codes.file = character(0), data.codes.dir = file.path(getwd(),
+  "orbis-var-names"), select.codes = character(0), txt.skip.lines = 2,
+  txt.nlines = NA, batch.nlines = 10^7,
+  batch.file.dir = character(0), batch.file.name = character(0),
+  batch.file.name.prefix = "", batch.file.name.sufix = "",
+  save.rds = TRUE, return.invisible = FALSE,
+  harmonize.cols = character(0), harmonize.progress.by = 10^5,
+  harmonize.quite = FALSE, harmonize.procedures = list(list("toascii",
+  FALSE), "remove.brackets", "toupper", "apply.nber", "remove.spaces"))
 }
 \arguments{
-\item{orbis.data.raw.file}{File name of raw Orbis data}
+\item{txt.file.name}{File name of raw Orbis data}
 
-\item{orbis.data.path}{A path to directory with raw data. Default is working directory.}
+\item{txt.file.dir}{A path to directory with raw data. Default is working directory.}
 
-\item{orbis.data.codes.file}{Name of the .csv file with codes. Default is the same as orbis.data.raw.file but with .csv}
+\item{data.codes.file}{Name of the .csv file with codes. Default is the same as txt.file.name but with .csv}
 
-\item{orbis.data.codes.dir}{A path to .csv file with codes. Default is ./orbis-var-names}
+\item{data.codes.dir}{A path to .csv file with codes. Default is ./orbis-var-names}
 
-\item{orbis.select.fields}{A character vector with felds (code) to select. Default is all.}
+\item{select.codes}{A character vector with felds (code) to select. Default is all.}
 
-\item{orbis.data.raw.nlines}{Number of lined in the raw data file. Default is calculate with grep}
+\item{txt.skip.lines}{The header of raw data. The default is 2.}
 
-\item{orbis.data.raw.skip.lines}{The header of raw data. The default is 2.}
+\item{txt.nlines}{Number of lined in the raw data file. Default is calculate with grep}
 
-\item{orbis.batch.nlines}{Number of lines to read in batch. The default is 10^7}
+\item{batch.nlines}{Number of lines to read in batch. The default is 10^7}
 
-\item{orbis.batch.path}{Path for saving .rds files. The default is dir same as 'orbis.data.raw.file'}
+\item{batch.file.dir}{Path for saving .rds files. The default is dir same as 'txt.file.name'}
 
-\item{orbis.harmonize.cols}{Which columns to harmonize. (Requires harmonizer package.)}
+\item{harmonize.cols}{Which columns to harmonize. (Requires harmonizer package.)}
 
-\item{harmonizer.progress.by}{(Requires harmonizer package.) Numeric value that is used to split the org.names vector for showing percentage of completion. Default is 0 meaning not to split the vector and thus does not show progress percentage. Designed to be used for long strings.}
+\item{harmonize.progress.by}{(Requires harmonizer package.) Numeric value that is used to split the org.names vector for showing percentage of completion. Default is 0 meaning not to split the vector and thus does not show progress percentage. Designed to be used for long strings.}
 
-\item{harmonizer.quite}{(Requires harmonizer package.) Logical value indicating whether or not print messages about procedures progress.}
+\item{harmonize.quite}{(Requires harmonizer package.) Logical value indicating whether or not print messages about procedures progress.}
 
-\item{harmonizer.procedures}{(Requires harmonizer package.) List of harmonization procedures. Each procedure can be specified as a string representing procedure name (see details for procedure names) or as a list where the first element should be procedure name (string) and other elements will passed as arguments to this procedure.}
+\item{harmonize.procedures}{(Requires harmonizer package.) List of harmonization procedures. Each procedure can be specified as a string representing procedure name (see details for procedure names) or as a list where the first element should be procedure name (string) and other elements will passed as arguments to this procedure.}
 }
 \value{
 A vector of .rds file names.
 }
 \description{
 Designed to be run from the direcrory where the data is.
-}
-\examples{
-none yet...
 }

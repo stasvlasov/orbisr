@@ -11,24 +11,24 @@
 :ID:       org:br0hook0hci0
 :END:
 #+BEGIN_SRC R :results silent :session :tangle .Rprofile
- ## Creates OrbisR package
+   ## Creates OrbisR package
 
-## --------------------------------------------------------------------------------
-## Load or Install Packages
-## --------------------------------------------------------------------------------
-for(pkg in c('pbapply'
-           , 'stringr'
-           , 'data.table'
-           , 'dplyr'
-           , 'magrittr'
-           , 'devtools'
-           , "usethis"
-           , 'roxygen2'))
-    if(!require(pkg, character.only = TRUE)) {
-        install.packages(pkg, repos = 'http://cloud.r-project.org', quiet = TRUE)
-        library(pkg, character.only = TRUE)
-    }
-## --------------------------------------------------------------------------------
+  ## --------------------------------------------------------------------------------
+  ## Load or Install Packages
+  ## --------------------------------------------------------------------------------
+  for(pkg in c('pbapply'
+             , 'stringr'
+             , 'data.table'
+             , 'dplyr'
+             , 'magrittr'
+             , 'devtools'
+             , "usethis"
+             , 'roxygen2'))
+      if(!require(pkg, character.only = TRUE)) {
+          install.packages(pkg, repos = 'http://cloud.r-project.org', quiet = TRUE)
+          library(pkg, character.only = TRUE)
+      }
+  ## --------------------------------------------------------------------------------
 #+END_SRC
 
 ** package info
@@ -51,20 +51,16 @@ for(pkg in c('pbapply'
 
 #+BEGIN_SRC R :results silent :tangle no
 
-## Making a package
-## --------------------------------------------------------------------------------
+  ## Making a package
+  ## --------------------------------------------------------------------------------
 
-  package.packages <- c(
-    "data.table"
-  , "magrittr"
-  , "stringi"
-  , "stringr"
-  , "zoo"
-  , "dplyr"
-  , "readr"
-  , "lubridate"
-  , "humanFormat"
-  , "parallel")
+  package.packages <- c("pbapply"
+                      , "data.table"
+                      , "magrittr"
+                      , "stringr"
+                      , "dplyr"
+                      , "harmonizer")
+
 
   ## Print current packages verstions
   package.packages %>% sapply(function(pkg)
@@ -73,40 +69,31 @@ for(pkg in c('pbapply'
 
   ## Adjust verstions manually
   package.packages.man.ver  <- c(
-    "data.table (>= 1.12)"
+    "pbapply (>= 1.4)"
+  , "data.table (>= 1.12)"
   , "magrittr (>= 1.5)"
-  , "stringi (>= 1.4)"
   , "stringr (>= 1.4)"
-  , "zoo (>= 1.8)"
   , "dplyr (>= 0.8)"
-  , "readr (>= 1.3)"
-  , "lubridate (>= 1.7)"
-  , "humanFormat (>= 1.0)"
-  , "parallel (>= 3.5.0)"
+  , "harmonizer (>= 0.0.0.9000)"
   )
 
 
-## Assume that it runs from package directory
-use_description(fields =
-                    list(Title  = "Tools for working with Orbis Bulk database"
-                       , Date = "2019-03-18"
-                       , "Authors@R" = 'as.person("Stanislav Vlasov <s.vlasov@uvt.nl> [aut, cre]")'
-                       , License = "MIT License"
-                       , Imports = paste("pbapply"
-                                       , "data.table"
-                                       , "magrittr"
-                                       , "stringr"
-                                       , "dplyr"
-                                       , "harmonizer (>= 0.0.0.9000)"
-                                       , sep = ", ")
-                       , Depends = "R (>= 3.4.1)"
-                       , Description = "Set of functions that help to prepare, to load into R session and to search Orbis Bulk data"
-                       , References = "BvD Orbis - Detailed global private company information - https://www.bvdinfo.m/en-us/our-products/company-information/international-products/orbis"))
+  ## Assume that it runs from package directory
+  use_description(fields =
+                      list(Title  = "Tools for working with Orbis Bulk database"
+                         , Date = "2019-03-18"
+                         , "Authors@R" = 'as.person("Stanislav Vlasov <s.vlasov@uvt.nl> [aut, cre]")'
+                         , License = "MIT License"
+                         , Imports = paste(package.packages.man.ver
+                                         , collapse = ", ")
+                         , Depends = "R (>= 3.4.1)"
+                         , Description = "Set of functions that help to prepare, to load into R session and to search Orbis Bulk data"
+                         , References = "BvD Orbis - Detailed global private company information - https://www.bvdinfo.m/en-us/our-products/company-information/international-products/orbis"))
 
 
-## document()  # This function is a wrapper for the ‘roxygen2::roxygenize()’ but also load the package
+  ## document()  # This function is a wrapper for the ‘roxygen2::roxygenize()’ but also load the package
 
-roxygenize()
+  roxygenize()
 
 #+END_SRC
 
@@ -185,11 +172,16 @@ library('orbisr')
   #' @param txt.skip.lines The header of raw data. The default is 2.
   #' @param batch.nlines Number of lines to read in batch. The default is 10^7
   #' @param batch.file.dir Path for saving .rds files. The default is dir same as 'txt.file.name'
+  #' @param batch.file.name If provided use this file name for saving rds. Defauld is to use base of 'txt.file.name'
+  #' @param batch.file.name.prefix Prefix to .rds file name
+  #' @param batch.file.name.sufix Sufix to .rds file name
+  #' @param save.rds If FALSE it will return loaded data without saving .rsd. Otherwise it will return list of rds. file names that was saved. Default is TRUE
+  #' @param return.invisible If TRUE return invisibly. Default is FALSE
   #' @param harmonize.cols Which columns to harmonize. (Requires harmonizer package.)
   #' @param harmonize.progress.by (Requires harmonizer package.) Numeric value that is used to split the org.names vector for showing percentage of completion. Default is 0 meaning not to split the vector and thus does not show progress percentage. Designed to be used for long strings.
   #' @param harmonize.quite (Requires harmonizer package.) Logical value indicating whether or not print messages about procedures progress.
   #' @param harmonize.procedures (Requires harmonizer package.) List of harmonization procedures. Each procedure can be specified as a string representing procedure name (see details for procedure names) or as a list where the first element should be procedure name (string) and other elements will passed as arguments to this procedure.
-  #' @return A vector of .rds file names.
+  #' @return A list of .rds file names. (If save.rds is FALSE returns list of data.tables)
   #' @import magrittr data.table stringr dplyr harmonizer
   #' @export
   #' @md

@@ -13,14 +13,15 @@ License: MIT License
 Depends: 
     R (>= 3.4.1)
 Imports: 
-    data.table,
-    dplyr,
-    magrittr,
-    pbapply,
-    stringr
+    data.table (>= 1.12),
+    dplyr (>= 0.8),
+    harmonizer (>= 0.0.0.9000),
+    magrittr (>= 1.5),
+    pbapply (>= 1.4),
+    stringr (>= 1.4)
 Encoding: UTF-8
 LazyData: true
 References: BvD Orbis - Detailed global private company
     information -
     https://www.bvdinfo.m/en-us/our-products/company-information/international-products/orbis
-RoxygenNote: 6.0.1
+RoxygenNote: 6.1.1
