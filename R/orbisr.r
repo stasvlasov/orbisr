@@ -211,6 +211,7 @@ orbis.save.rds <- function(txt.file.name
       ## return
       if(save.rds) batch.file.name else orbis.data.batch
     })
+  if(length(batch) == 1) batch %<>% unlist(recursive = FALSE)
   if(return.invisible) return(batch) %>% invisible
   else return(batch)
 }
