@@ -200,7 +200,6 @@ library('orbisr')
                                file.path(getwd(), "orbis-var-names")
                            , orbis.select.fields = character(0)
                            , orbis.data.raw.nlines = NA
-                           , orbis.data.test.nlines = Inf
                            , orbis.data.raw.skip.lines = 2
                            , orbis.batch.nlines = 10^7
                            , orbis.batch.path = character(0)
@@ -254,21 +253,19 @@ library('orbisr')
     }
     orbis.data.description %<>%
       filter(var.name %in% orbis.select.fields)
-    ## Set format for rds files numbering
-    batch.file.format <- paste0("%0", nchar(orbis.data.raw.nlines), "d")
     ## Set start read rows for fread
-    rows.skip <-
-      if(!is.na(orbis.data.raw.nlines) & orbis.batch.nlines != Inf) {
-        seq(from = orbis.data.raw.skip.lines
-          , to = orbis.data.raw.nlines
-          , by = orbis.batch.nlines)
-      } else orbis.data.raw.skip.lines
-    rows.read <-
-      if(orbis.batch.nlines != Inf) {
-        rows.skip[-1] %>%
-          c(orbis.data.raw.nlines) %>%
-          '-'(rows.skip)
-      } else orbis.batch.nlines
+  rows.skip <-
+    if(orbis.batch.nlines != Inf ) {
+      seq(from = orbis.data.raw.skip.lines
+        , to = orbis.data.raw.nlines
+        , by = orbis.batch.nlines)
+    } else orbis.data.raw.skip.lines
+  rows.read <-
+    if(orbis.batch.nlines != Inf | !is.na(orbis.data.raw.nlines)) {
+      rows.skip[-1] %>%
+        c(orbis.data.raw.nlines) %>%
+        '-'(rows.skip)
+    } else orbis.data.raw.nlines
     ## write batches to .rds
     batch <- 
       lapply(1:length(rows.read), function(i) {
@@ -318,6 +315,7 @@ library('orbisr')
           }
           batch.file.name.lines <-
             if(orbis.batch.nlines != Inf) {
+              batch.file.format <- paste0("%0", nchar(orbis.data.raw.nlines), "d")
               paste0(".lines-"
                    , sprintf(batch.file.format, rows.skip[i] + 1)
                    , "-"
@@ -346,6 +344,27 @@ library('orbisr')
   ## orbis.save.rds("key-financials-usd.txt", orbis.select.fields = c("emp", "rev"))
   ## orbis.save.rds("key-financials-usd.txt") %>% unlist
   ## orbis.save.rds("orbis-harmonize.r")
+
+
+
+  orbis.data.raw.nlines = 100
+  orbis.data.raw.skip.lines = 2
+  orbis.batch.nlines = Inf
+
+
+  rows.skip <-
+    if(orbis.batch.nlines != Inf ) {
+      seq(from = orbis.data.raw.skip.lines
+        , to = orbis.data.raw.nlines
+        , by = orbis.batch.nlines)
+    } else orbis.data.raw.skip.lines
+  rows.read <-
+    if(orbis.batch.nlines != Inf | !is.na(orbis.data.raw.nlines)) {
+      rows.skip[-1] %>%
+        c(orbis.data.raw.nlines) %>%
+        '-'(rows.skip)
+    } else orbis.data.raw.nlines
+
 
 #+END_SRC
 
