@@ -134,7 +134,7 @@ orbis.save.rds <- function(txt.file.name
       rows.skip[-1] %>%
         c(txt.nlines) %>%
         '-'(rows.skip)
-    } else txt.nlines
+    } else batch.nlines
   ## write batches to .rds
   batch <- 
     lapply(1:length(rows.read), function(i) {
