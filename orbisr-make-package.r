@@ -32,6 +32,7 @@ use_description(fields =
                                        , "magrittr"
                                        , "stringr"
                                        , "dplyr"
+                                       , "harmonizer (>= 0.0.0.9000)"
                                        , sep = ", ")
                        , Depends = "R (>= 3.4.1)"
                        , Description = "Set of functions that help to prepare, to load into R session and to search Orbis Bulk data"

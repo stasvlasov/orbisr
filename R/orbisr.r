@@ -76,8 +76,6 @@ is.0 <- function(x) length(x) == 0
 #' @return A vector of .rds file names.
 #' @import magrittr data.table stringr dplyr harmonizer
 #' @export
-#' @examples
-#' none yet...
 #' @md
 orbis.save.rds <- function(orbis.data.raw.file
                          , orbis.data.path = getwd()
@@ -214,10 +212,11 @@ orbis.save.rds <- function(orbis.data.raw.file
 # --------------------------------------------------------------------------------
 #' Unpacks Orbis RAR files.
 #'
-#' Assumes that it is running from the orbis data directory
+#' By default assumes that it is running from the orbis data directory. Also it chances output file name to lowercase and "_" becomes "-".
 #' @param rarfile File name to unrar. (without .rar extention)
 #' @param rardir Default is in working directory "orbis-world-2017-09-13"
 #' @param exdir A path where to extract zip file. Default is in working directory "patview-data-tsv"
+#' @param unrar.command Command to unpack the archive (befault is "7z x -o")
 #' @return Unzipped file path.
 #' @import magrittr stringr
 #' @export
@@ -225,8 +224,10 @@ orbis.save.rds <- function(orbis.data.raw.file
 #' none yet...
 #' @md
 orbis.unrar.txt <- function(rarfile
-                           , rardir = file.path(getwd(), "orbis-world-2017-09-13")
-                           , exdir = getwd()) {
+                          , rardir = file.path(getwd(), "orbis-world-2017-09-13")
+                          , exdir = getwd()
+                          , unrar.command = "7z x -o") {
+    if(Sys.which(str_extract(command, "^[^\\s]+")) != "") {
     file.name <- rarfile %>%
         basename %>% 
         str_replace_all("_", "-") %>%
@@ -234,11 +235,12 @@ orbis.unrar.txt <- function(rarfile
     if(str_detect(exdir %>% list.files, file.name) %>% any) {
         message("Seems lile file '", rarfile, ".rar' is already extracted. Exiting.")
     } else {
+        message("Unpacking the file - ", rarfile, "...")
         rarfile %>%
             paste0(".rar") %>% 
             file.path(rardir,.) %>%
             normalizePath %>% 
-            paste0('7z x -o"', exdir, '" "',.,'"') %>% 
+            paste0(unrar.command,' "', exdir, '" "',.,'"') %>% 
             system
         message("File extracted.")
         rarfile %>%
@@ -248,6 +250,7 @@ orbis.unrar.txt <- function(rarfile
     }
     file.name %>%
         paste0(".txt")
+    } else message("Command ", unrar.command," is not awailable.")
 }
 
 
