@@ -247,18 +247,18 @@ library('orbisr')
     orbis.data.description %<>%
       filter(var.name %in% select.codes)
     ## Set start read rows for fread
-  rows.skip <-
-    if(batch.nlines != Inf ) {
-      seq(from = txt.skip.lines
-        , to = txt.nlines
-        , by = batch.nlines)
-    } else txt.skip.lines
-  rows.read <-
-    if(batch.nlines != Inf | !is.na(txt.nlines)) {
-      rows.skip[-1] %>%
-        c(txt.nlines) %>%
-        '-'(rows.skip)
-    } else txt.nlines
+    rows.skip <-
+      if(batch.nlines != Inf ) {
+        seq(from = txt.skip.lines
+          , to = txt.nlines
+          , by = batch.nlines)
+      } else txt.skip.lines
+    rows.read <-
+      if(batch.nlines != Inf | !is.na(txt.nlines)) {
+        rows.skip[-1] %>%
+          c(txt.nlines) %>%
+          '-'(rows.skip)
+      } else txt.nlines
     ## write batches to .rds
     batch <- 
       lapply(1:length(rows.read), function(i) {
@@ -316,12 +316,18 @@ library('orbisr')
             } else ""
           batch.file.name <-
             if(is.0(batch.file.name)) {
-            paste0(file.path(batch.file.dir, txt.file.name.noext)
-                 , batch.file.name.prefix
-                 , batch.file.name.sufix
-                 , batch.file.name.lines
-                 , ".rds")
-            } else file.path(batch.file.dir, batch.file.name)
+              file.path(batch.file.dir
+                      , paste0(batch.file.name.prefix
+                             , txt.file.name.noext
+                             , batch.file.name.sufix
+                             , batch.file.name.lines
+                             , ".rds"))
+            } else {
+              file.path(batch.file.dir
+                      , paste0(batch.file.name
+                             , batch.file.name.lines
+                             , ".rds"))
+            }
           message("Saving RDS: ", batch.file.name)
           saveRDS(orbis.data.batch, batch.file.name)
         }

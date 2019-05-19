@@ -48,11 +48,16 @@ is.0 <- function(x) length(x) == 0
 #' @param txt.skip.lines The header of raw data. The default is 2.
 #' @param batch.nlines Number of lines to read in batch. The default is 10^7
 #' @param batch.file.dir Path for saving .rds files. The default is dir same as 'txt.file.name'
+#' @param batch.file.name If provided use this file name for saving rds. Defauld is to use base of 'txt.file.name'
+#' @param batch.file.name.prefix Prefix to .rds file name
+#' @param batch.file.name.sufix Sufix to .rds file name
+#' @param save.rds If FALSE it will return loaded data without saving .rsd. Otherwise it will return list of rds. file names that was saved. Default is TRUE
+#' @param return.invisible If TRUE return invisibly. Default is FALSE
 #' @param harmonize.cols Which columns to harmonize. (Requires harmonizer package.)
 #' @param harmonize.progress.by (Requires harmonizer package.) Numeric value that is used to split the org.names vector for showing percentage of completion. Default is 0 meaning not to split the vector and thus does not show progress percentage. Designed to be used for long strings.
 #' @param harmonize.quite (Requires harmonizer package.) Logical value indicating whether or not print messages about procedures progress.
 #' @param harmonize.procedures (Requires harmonizer package.) List of harmonization procedures. Each procedure can be specified as a string representing procedure name (see details for procedure names) or as a list where the first element should be procedure name (string) and other elements will passed as arguments to this procedure.
-#' @return A vector of .rds file names.
+#' @return A list of .rds file names. (If save.rds is FALSE returns list of data.tables)
 #' @import magrittr data.table stringr dplyr harmonizer
 #' @export
 #' @md
@@ -118,18 +123,18 @@ orbis.save.rds <- function(txt.file.name
   orbis.data.description %<>%
     filter(var.name %in% select.codes)
   ## Set start read rows for fread
-rows.skip <-
-  if(batch.nlines != Inf ) {
-    seq(from = txt.skip.lines
-      , to = txt.nlines
-      , by = batch.nlines)
-  } else txt.skip.lines
-rows.read <-
-  if(batch.nlines != Inf | !is.na(txt.nlines)) {
-    rows.skip[-1] %>%
-      c(txt.nlines) %>%
-      '-'(rows.skip)
-  } else txt.nlines
+  rows.skip <-
+    if(batch.nlines != Inf ) {
+      seq(from = txt.skip.lines
+        , to = txt.nlines
+        , by = batch.nlines)
+    } else txt.skip.lines
+  rows.read <-
+    if(batch.nlines != Inf | !is.na(txt.nlines)) {
+      rows.skip[-1] %>%
+        c(txt.nlines) %>%
+        '-'(rows.skip)
+    } else txt.nlines
   ## write batches to .rds
   batch <- 
     lapply(1:length(rows.read), function(i) {
@@ -187,12 +192,18 @@ rows.read <-
           } else ""
         batch.file.name <-
           if(is.0(batch.file.name)) {
-          paste0(file.path(batch.file.dir, txt.file.name.noext)
-               , batch.file.name.prefix
-               , batch.file.name.sufix
-               , batch.file.name.lines
-               , ".rds")
-          } else file.path(batch.file.dir, batch.file.name)
+            file.path(batch.file.dir
+                    , paste0(batch.file.name.prefix
+                           , txt.file.name.noext
+                           , batch.file.name.sufix
+                           , batch.file.name.lines
+                           , ".rds"))
+          } else {
+            file.path(batch.file.dir
+                    , paste0(batch.file.name
+                           , batch.file.name.lines
+                           , ".rds"))
+          }
         message("Saving RDS: ", batch.file.name)
         saveRDS(orbis.data.batch, batch.file.name)
       }
