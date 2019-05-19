@@ -196,9 +196,11 @@ library('orbisr')
   orbis.save.rds <- function(orbis.data.raw.file
                            , orbis.data.path = getwd()
                            , orbis.data.codes.file = character(0)
-                           , orbis.data.codes.dir = file.path(orbis.data.path, "orbis-var-names")
+                           , orbis.data.codes.dir = 
+                               file.path(getwd(), "orbis-var-names")
                            , orbis.select.fields = character(0)
                            , orbis.data.raw.nlines = NA
+                           , orbis.data.test.nlines = Inf
                            , orbis.data.raw.skip.lines = 2
                            , orbis.batch.nlines = 10^7
                            , orbis.batch.path = character(0)
@@ -209,11 +211,12 @@ library('orbisr')
                            , orbis.harmonize.cols = character(0)
                            , harmonizer.progress.by = 10^5
                            , harmonizer.quite = FALSE
-                           , harmonizer.procedures = list(list("toascii", FALSE)
-                                                        , "remove.brackets"
-                                                        , "toupper"
-                                                        , "apply.nber"
-                                                        , "remove.spaces")
+                           , harmonizer.procedures = 
+                               list(list("toascii", FALSE)
+                                  , "remove.brackets"
+                                  , "toupper"
+                                  , "apply.nber"
+                                  , "remove.spaces")
                              ) {
     ## Calculate number of lines a raw Orbis data file has
     if(is.na(orbis.data.raw.nlines) & orbis.batch.nlines != Inf) {
@@ -269,40 +272,40 @@ library('orbisr')
     ## write batches to .rds
     batch <- 
       lapply(1:length(rows.read), function(i) {
-      ## extract batch
-      message("==============================================================================")
-      message("Reading lines from ", rows.skip[i])
-      started <- Sys.time()
-      message("Started: ", date())
-      ## read batch
-      orbis.data.batch <-
-        orbis.data.raw.file %>% 
-        file.path(orbis.data.path, .) %>% 
-        fread(nrows = rows.read[i]
-            , header = FALSE
-            , skip = rows.skip[i]
-            , showProgress = TRUE
-            , select = orbis.data.description$col
-            , strip.white = FALSE
-            , quote = ""
-            , sep = "\t"
-            , stringsAsFactors = FALSE
-            , colClasses = list(character = orbis.data.description$col))
-      message("Batch loaded!")
-      ## rename columns
-      names(orbis.data.batch) <- orbis.data.description$var.name
-      ## harmonization
-      if(!is.0(orbis.harmonize.cols)) {
-        sapply(orbis.harmonize.cols, function(col) {
-          message("Harmonizing '", col, "' column...")
-          orbis.data.batch[[paste0(col, ".harmonized")]] <<- 
-            orbis.data.batch[[col]] %>%
-            harmonize(progress.by = harmonizer.progress.by
-                    , quite = harmonizer.quite
-                    , procedures = harmonizer.procedures)
-          message("Harmonized '", col, "' column! Yey!")
-        })
-      }
+        ## extract batch
+        message("==============================================================================")
+        message("Reading lines from ", rows.skip[i])
+        started <- Sys.time()
+        message("Started: ", date())
+        ## read batch
+        orbis.data.batch <-
+          orbis.data.raw.file %>% 
+          file.path(orbis.data.path, .) %>% 
+          fread(nrows = rows.read[i]
+              , header = FALSE
+              , skip = rows.skip[i]
+              , showProgress = TRUE
+              , select = orbis.data.description$col
+              , strip.white = FALSE
+              , quote = ""
+              , sep = "\t"
+              , stringsAsFactors = FALSE
+              , colClasses = list(character = orbis.data.description$col))
+        message("Batch loaded!")
+        ## rename columns
+        names(orbis.data.batch) <- orbis.data.description$var.name
+        ## harmonization
+        if(!is.0(orbis.harmonize.cols)) {
+          sapply(orbis.harmonize.cols, function(col) {
+            message("Harmonizing '", col, "' column...")
+            orbis.data.batch[[paste0(col, ".harmonized")]] <<- 
+              orbis.data.batch[[col]] %>%
+              harmonize(progress.by = harmonizer.progress.by
+                      , quite = harmonizer.quite
+                      , procedures = harmonizer.procedures)
+            message("Harmonized '", col, "' column! Yey!")
+          })
+        }
         ## save batch
         if(save.rds) {
           ## Make a dir for saving .rds
@@ -314,10 +317,12 @@ library('orbisr')
               dir.create(showWarnings = FALSE)
           }
           batch.file.name.lines <-
-            paste0(".lines-"
-                 , sprintf(batch.file.format, rows.skip[i] + 1)
-                 , "-"
-                 , sprintf(batch.file.format, rows.skip[i] + rows.read[i]))
+            if(orbis.batch.nlines != Inf) {
+              paste0(".lines-"
+                   , sprintf(batch.file.format, rows.skip[i] + 1)
+                   , "-"
+                   , sprintf(batch.file.format, rows.skip[i] + rows.read[i]))
+            } else ""
           batch.file.path <-
             paste0(file.path(orbis.batch.path, orbis.data.raw.file.noext)
                  , batch.file.name.prefix
